@@ -6,7 +6,7 @@ use App\Http\Requests\CreateCategoryRequest;
 use App\Http\Requests\UpdateQuestionRequest;
 use App\Http\Resources\CategoryResource;
 use App\Models\Category;
-use Illuminate\Http\Request;
+use Exception;
 use Symfony\Component\HttpFoundation\Response;
 
 class CategoryController extends Controller
@@ -57,7 +57,7 @@ class CategoryController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param UpdateQuestionRequest $request
      * @param Category $category
      * @return \Illuminate\Http\Response
      */
@@ -81,6 +81,14 @@ class CategoryController extends Controller
      */
     public function destroy(Category $category)
     {
-        //
+        try {
+            $category->delete();
+            $response['data']['message'] = "Category has been deleted";
+            return response()->json($response, Response::HTTP_OK);
+        } catch (Exception $e) {
+
+            $response['data']['message'] = $e->getMessage();
+            return response($response, Response::HTTP_BAD_REQUEST);
+        }
     }
 }

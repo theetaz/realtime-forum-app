@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateCategoryRequest;
-use App\Http\Requests\UpdateQuestionRequest;
+use App\Http\Requests\UpdateCategoryRequest;
 use App\Http\Resources\CategoryResource;
 use App\Models\Category;
 use Exception;
@@ -57,11 +57,11 @@ class CategoryController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param UpdateQuestionRequest $request
+     * @param UpdateCategoryRequest $request
      * @param Category $category
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateQuestionRequest $request, Category $category)
+    public function update(UpdateCategoryRequest $request, Category $category)
     {
         $result = $category->update($request->all());
         if ($result) {

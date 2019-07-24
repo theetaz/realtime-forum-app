@@ -2,84 +2,93 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CreateCategoryRequest;
+use App\Http\Requests\UpdateCategoryRequest;
+use App\Http\Resources\CategoryResource;
 use App\Models\Category;
-use Illuminate\Http\Request;
+use Exception;
+use Symfony\Component\HttpFoundation\Response;
 
 class CategoryController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
+     * Display a listing of the resource
      */
     public function index()
     {
-        //
+        $categories = Category::orderBy('created_at', 'DESC')
+            ->get();
+
+        return CategoryResource::collection($categories);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param CreateCategoryRequest $request
+     * @return void
      */
-    public function store(Request $request)
+    public function store(CreateCategoryRequest $request)
     {
-        //
+        $category = Category::create($request->all());
+        if ($category) {
+            $response['data'] = new CategoryResource($category);
+            return response()->json($response, Response::HTTP_CREATED);
+
+        } else {
+            $response['data'] = "Error occurred while creating the category";
+            return response($response, Response::HTTP_BAD_REQUEST);
+        }
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Category  $category
-     * @return \Illuminate\Http\Response
+     * @param Category $category
+     * @return CategoryResource
      */
     public function show(Category $category)
     {
-        //
+        return new CategoryResource($category);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Category  $category
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Category $category)
-    {
-        //
-    }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Category  $category
+     * @param UpdateCategoryRequest $request
+     * @param Category $category
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Category $category)
+    public function update(UpdateCategoryRequest $request, Category $category)
     {
-        //
+        $result = $category->update($request->all());
+        if ($result) {
+            $response['data'] = new CategoryResource($category);
+            return response()->json($response, Response::HTTP_CREATED);
+        } else {
+            $response['data']['message'] = "Error occurred while updating the category";
+            return response($response, Response::HTTP_BAD_REQUEST);
+        }
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Category  $category
+     * @param Category $category
      * @return \Illuminate\Http\Response
      */
     public function destroy(Category $category)
     {
-        //
+        try {
+            $category->delete();
+            $response['data']['message'] = "Category has been deleted";
+            return response()->json($response, Response::HTTP_OK);
+        } catch (Exception $e) {
+
+            $response['data']['message'] = $e->getMessage();
+            return response($response, Response::HTTP_BAD_REQUEST);
+        }
     }
 }

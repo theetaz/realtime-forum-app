@@ -2,19 +2,18 @@
 
 namespace App\Http\Resources;
 
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Carbon;
 
 /**
- * @property mixed title
+ * @property mixed name
  * @property mixed slug
  * @property mixed path
- * @property mixed body
  * @property mixed created_at
  * @property mixed updated_at
  */
-class QuestionResource extends JsonResource
+class CategoryResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -24,17 +23,13 @@ class QuestionResource extends JsonResource
      */
     public function toArray($request)
     {
-
         return [
-            'title' => $this->title,
-            'body' => $this->body,
+            'name' => $this->name,
             'slug' => $this->slug,
             'path' => $this->path,
-            'category' => $this->category->name ?? null,
-            'user' => $this->user->name ?? null,
-            'created_at' => Carbon::parse($this->created_at)->diffForHumans() ?? null,
-            'modified_at' => Carbon::parse($this->updated_at)->diffForHumans() ?? null,
+            'create_at' => Carbon::parse($this->created_at)->format('Y-m-d') ?? null,
+            'modified_at' => Carbon::parse($this->updated_at)->format('Y-m-d') ?? null,
         ];
     }
-
 }
+

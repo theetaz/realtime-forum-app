@@ -9,7 +9,7 @@ use App\Models\Question;
 use Exception;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use Illuminate\Http\Response;
+use Symfony\Component\HttpFoundation\Response;
 
 class QuestionController extends Controller
 {
@@ -21,7 +21,9 @@ class QuestionController extends Controller
      */
     public function index()
     {
-        $questions = Question::all();
+        $questions = Question::with(['category', 'user'])
+            ->orderBy('updated_at', 'DESC')
+            ->get();
         return QuestionResource::collection($questions);
     }
 

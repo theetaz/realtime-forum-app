@@ -2,19 +2,20 @@
 
 namespace App\Models;
 
+use App\Helper\GlobalHelper;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * @property mixed slug
+ * @method static create(array $array)
  */
 class Question extends Model
 {
 
     protected $fillable = [
         'title',
-        'slug',
         'body',
         'category_id',
         'user_id'
@@ -27,6 +28,13 @@ class Question extends Model
     public function getRouteKeyName()
     {
        return 'slug';
+    }
+
+
+    public function setTitleAttribute($title)
+    {
+       $this->attributes['title'] = $title;
+       $this->attributes['slug'] = GlobalHelper::generateSlug($title, $this->getTable());
     }
 
     /**
@@ -58,6 +66,6 @@ class Question extends Model
      */
     public function getPathAttribute()
     {
-        return config('constant.api_base_url') .'question/'. $this->slug;
+        return url('api') .'/question/'. $this->slug;
     }
 }

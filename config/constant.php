@@ -1,5 +1,6 @@
 <?php
 
 return [
-    'api_base_url' => env('API_BASE_URL', url('/') . '/api/'),
+
+    'api_base_url' => env('API_BASE_URL', 'http://localhost'),
 ];

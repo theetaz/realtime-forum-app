@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -10,6 +11,8 @@ use Illuminate\Http\Resources\Json\JsonResource;
  * @property mixed slug
  * @property mixed path
  * @property mixed body
+ * @property mixed created_at
+ * @property mixed updated_at
  */
 class QuestionResource extends JsonResource
 {
@@ -29,6 +32,8 @@ class QuestionResource extends JsonResource
             'path' => $this->path,
             'category' => $this->category->name ?? null,
             'user' => $this->user->name ?? null,
+            'created_at' => Carbon::parse($this->created_at)->diffForHumans() ?? null,
+            'modify_at' => Carbon::parse($this->updated_at)->diffForHumans() ?? null,
         ];
     }
 

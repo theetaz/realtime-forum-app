@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateCategoryRequest;
+use App\Http\Requests\UpdateQuestionRequest;
 use App\Http\Resources\CategoryResource;
 use App\Models\Category;
 use Illuminate\Http\Request;
@@ -36,7 +37,7 @@ class CategoryController extends Controller
             return response()->json($response, Response::HTTP_CREATED);
 
         } else {
-            $response['data'] = "Error occurred while creating the question";
+            $response['data'] = "Error occurred while creating the category";
             return response($response, Response::HTTP_BAD_REQUEST);
         }
     }
@@ -60,9 +61,16 @@ class CategoryController extends Controller
      * @param Category $category
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Category $category)
+    public function update(UpdateQuestionRequest $request, Category $category)
     {
-        //
+        $result = $category->update($request->all());
+        if ($result) {
+            $response['data'] = new CategoryResource($category);
+            return response()->json($response, Response::HTTP_CREATED);
+        } else {
+            $response['data']['message'] = "Error occurred while updating the category";
+            return response($response, Response::HTTP_BAD_REQUEST);
+        }
     }
 
     /**

@@ -21,7 +21,9 @@ class QuestionController extends Controller
      */
     public function index()
     {
-        $questions = Question::all();
+        $questions = Question::with(['category', 'user'])
+            ->orderBy('updated_at', 'DESC')
+            ->get();
         return QuestionResource::collection($questions);
     }
 

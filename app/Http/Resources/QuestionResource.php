@@ -33,7 +33,7 @@ class QuestionResource extends JsonResource
             'category' => $this->category->name ?? null,
             'user' => $this->user->name ?? null,
             'created_at' => Carbon::parse($this->created_at)->diffForHumans() ?? null,
-            'modify_at' => Carbon::parse($this->updated_at)->diffForHumans() ?? null,
+            'modified_at' => Carbon::parse($this->updated_at)->diffForHumans() ?? null,
         ];
     }
 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CreateReplyRequest;
 use App\Http\Resources\ReplyResource;
 use App\Http\Resources\SingleReplyResource;
 use App\Models\Question;
@@ -29,9 +30,21 @@ class ReplyController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Question $question, CreateReplyRequest $request)
     {
-        //
+        $result = $question->replies()->create($request->all());
+        dd($result);
+
+        //append slug to the request
+//        $question = Question::create($request->all());
+//        if ($question) {
+//            $response['data'] = new QuestionResource($question);
+//            return response()->json($response, Response::HTTP_CREATED);
+//
+//        } else {
+//            $response['data'] = "Error occurred while creating the question";
+//            return response($response, Response::HTTP_BAD_REQUEST);
+//        }
     }
 
     /**

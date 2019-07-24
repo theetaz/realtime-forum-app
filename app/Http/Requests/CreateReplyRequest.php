@@ -13,7 +13,18 @@ class CreateReplyRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
+    }
+
+    /**
+     * @return array
+     */
+    public function messages()
+    {
+        return [
+            'body.required' => 'Reply body can not be empty',
+            'question_id' => 'Incompatible question mapping',
+        ];
     }
 
     /**
@@ -24,7 +35,8 @@ class CreateReplyRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'body' => 'required|string',
+            'question_id' => 'required|integer',
         ];
     }
 }

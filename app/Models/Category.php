@@ -5,6 +5,10 @@ namespace App\Models;
 use App\Helper\GlobalHelper;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @property mixed slug
+ * @method static create(array $all)
+ */
 class Category extends Model
 {
     protected $fillable = ['name'];
@@ -17,12 +21,16 @@ class Category extends Model
     public function setNameAttribute($name)
     {
         $this->attributes['name'] = $name;
-        $this->attributes['slug'] = GlobalHelper::generateSlug($name, $this->getTable());
+        $this->attributes['slug'] = GlobalHelper::generateSlug($name, 'name', $this->getTable());
     }
 
-    public function questions()
+
+    /**
+     * @return string
+     */
+    public function getPathAttribute()
     {
-        return $this->belongsToMany(Question::class);
+        return url('api') .'/category/'. $this->slug;
     }
 
 }

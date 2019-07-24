@@ -34,7 +34,7 @@ class Question extends Model
     public function setTitleAttribute($title)
     {
        $this->attributes['title'] = $title;
-       $this->attributes['slug'] = GlobalHelper::generateSlug($title, $this->getTable());
+       $this->attributes['slug'] = GlobalHelper::generateSlug($title, 'title', $this->getTable());
     }
 
     /**

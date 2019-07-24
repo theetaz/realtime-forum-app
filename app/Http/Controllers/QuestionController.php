@@ -2,84 +2,98 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CreateQuestionRequest;
+use App\Http\Requests\UpdateQuestionRequest;
+use App\Http\Resources\QuestionResource;
 use App\Models\Question;
-use Illuminate\Http\Request;
+use Exception;
+use Illuminate\Contracts\Routing\ResponseFactory;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Http\Response;
 
 class QuestionController extends Controller
 {
+
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return AnonymousResourceCollection
      */
     public function index()
     {
-        //
+        $questions = Question::all();
+        return QuestionResource::collection($questions);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param CreateQuestionRequest $request
+     * @return ResponseFactory|Response
      */
-    public function store(Request $request)
+    public function store(CreateQuestionRequest $request)
     {
-        //
+        //append slug to the request
+        $question = Question::create($request->all());
+        if ($question) {
+            $response['data'] = new QuestionResource($question);
+            return response()->json($response, Response::HTTP_CREATED);
+
+        } else {
+            $response['data'] = "Error occurred while creating the question";
+            return response($response, Response::HTTP_BAD_REQUEST);
+        }
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Question  $question
-     * @return \Illuminate\Http\Response
+     * @param Question $question
+     * @return QuestionResource
      */
     public function show(Question $question)
     {
-        //
+        return new QuestionResource($question);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Question  $question
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Question $question)
-    {
-        //
-    }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Question  $question
-     * @return \Illuminate\Http\Response
+     * @param UpdateQuestionRequest $request
+     * @param Question $question
+     * @return void
      */
-    public function update(Request $request, Question $question)
+    public function update(UpdateQuestionRequest $request, Question $question)
     {
-        //
+        $result = $question->update($request->all());
+        if ($result) {
+            $response['data'] = new QuestionResource($question);
+            return response()->json($response, Response::HTTP_CREATED);
+        } else {
+            $response['data']['message'] = "Error occurred while updating the question";
+            return response($response, Response::HTTP_BAD_REQUEST);
+        }
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Question  $question
-     * @return \Illuminate\Http\Response
+     * @param Question $question
+     * @return Response
+     * @throws Exception
      */
     public function destroy(Question $question)
     {
-        //
+        try {
+            $question->delete();
+            $response['data']['message'] = "Question has been deleted";
+            return response()->json($response, Response::HTTP_OK);
+
+        } catch (Exception $e) {
+            $response['data']['message'] = $e->getMessage();
+            return response($response, Response::HTTP_BAD_REQUEST);
+        }
     }
 }

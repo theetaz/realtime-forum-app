@@ -9,6 +9,7 @@ use Illuminate\Support\Carbon;
 
 /**
  * @property mixed replies
+ * @method replies()
  */
 class ReplyResource extends JsonResource
 {
@@ -22,7 +23,7 @@ class ReplyResource extends JsonResource
     {
         return [
             'question' => new QuestionResource($this),
-            'replies' => $this->replies->map(function (Reply $reply) {
+            'replies' => $this->replies()->orderBy('updated_at', 'DESC')->get()->map(function (Reply $reply) {
                 $data = array();
                 $data['body'] = $reply->body;
                 $data['reply_id'] = $reply->id;

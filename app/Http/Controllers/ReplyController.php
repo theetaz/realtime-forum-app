@@ -8,7 +8,6 @@ use App\Http\Resources\ReplyResource;
 use App\Http\Resources\SingleReplyResource;
 use App\Models\Question;
 use App\Models\Reply;
-use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class ReplyController extends Controller
@@ -59,17 +58,26 @@ class ReplyController extends Controller
     }
 
 
-
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param UpdateReplyRequest $request
      * @param Reply $reply
      * @return \Illuminate\Http\Response
      */
     public function update(UpdateReplyRequest $request, Reply $reply)
     {
-        //
+        $result = $reply->update($request->all());
+
+        if ($result) {
+            $response['data'] = new SingleReplyResource($reply);
+            return response()->json($response, Response::HTTP_CREATED);
+
+        } else {
+            $response['data'] = "Error occurred while updating the reply";
+            return response($response, Response::HTTP_BAD_REQUEST);
+        }
+
     }
 
     /**

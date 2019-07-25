@@ -8,6 +8,7 @@ use App\Http\Resources\ReplyResource;
 use App\Http\Resources\SingleReplyResource;
 use App\Models\Question;
 use App\Models\Reply;
+use Exception;
 use Symfony\Component\HttpFoundation\Response;
 
 class ReplyController extends Controller
@@ -82,12 +83,19 @@ class ReplyController extends Controller
 
     /**
      * Remove the specified resource from storage.
-     *
      * @param Reply $reply
      * @return \Illuminate\Http\Response
      */
     public function destroy(Reply $reply)
     {
-        //
+        try {
+            $reply->delete();
+            $response['data']['message'] = "Reply has been deleted";
+            return response()->json($response, Response::HTTP_OK);
+
+        } catch (Exception $e) {
+            $response['data']['message'] = $e->getMessage();
+            return response($response, Response::HTTP_BAD_REQUEST);
+        }
     }
 }

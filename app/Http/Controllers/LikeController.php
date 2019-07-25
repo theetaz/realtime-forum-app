@@ -2,84 +2,54 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Like;
-use Illuminate\Http\Request;
+use App\Models\Reply;
+use Exception;
+use Illuminate\Http\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 class LikeController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
+     * @param Reply $reply
+     * @return JsonResponse
      */
-    public function index()
+    public function like(Reply $reply)
     {
-        //
+        //TODO remove hardcoded user id with JWT Auth
+        $like = $reply->likes()->create([
+            'user_id' => 1,
+        ]);
+
+        if ($like) {
+            $response['data']['message'] = "Like has been added successfully";
+            return response()->json($response, Response::HTTP_CREATED);
+        } else {
+            $response['data']['message'] = "Something went wrong while adding the like";
+            return response()->json($response, Response::HTTP_BAD_REQUEST);
+        }
+
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
+     * @param Reply $reply
+     * @return JsonResponse
      */
-    public function create()
+    public function disLike(Reply $reply)
     {
-        //
-    }
+        try {
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
+            //TODO remove hardcoded user id with JWT Auth
+            $reply->likes()
+                ->where('user_id', 1)
+                ->first()
+                ->delete();
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Like  $like
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Like $like)
-    {
-        //
-    }
+            $response['data']['message'] = "Like has been removed successfully";
+            return response()->json($response, Response::HTTP_OK);
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Like  $like
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Like $like)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Like  $like
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Like $like)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Like  $like
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Like $like)
-    {
-        //
+        } catch (Exception $e) {
+            $response['data']['message'] = $e->getMessage();
+            return response()->json($response, Response::HTTP_BAD_REQUEST);
+        }
     }
 }

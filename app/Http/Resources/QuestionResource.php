@@ -13,6 +13,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
  * @property mixed body
  * @property mixed created_at
  * @property mixed updated_at
+ * @property mixed id
  */
 class QuestionResource extends JsonResource
 {
@@ -26,6 +27,7 @@ class QuestionResource extends JsonResource
     {
 
         return [
+            'id' => $this->id,
             'title' => $this->title,
             'body' => $this->body,
             'slug' => $this->slug,

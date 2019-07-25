@@ -2,84 +2,100 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CreateReplyRequest;
+use App\Http\Requests\UpdateReplyRequest;
+use App\Http\Resources\ReplyResource;
+use App\Http\Resources\SingleReplyResource;
+use App\Models\Question;
 use App\Models\Reply;
-use Illuminate\Http\Request;
+use Exception;
+use Symfony\Component\HttpFoundation\Response;
 
 class ReplyController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @param Question $question
+     * @return ReplyResource
      */
-    public function index()
+    public function index(Question $question)
     {
-        //
+        return new ReplyResource($question);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param Question $question
+     * @param CreateReplyRequest $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Question $question, CreateReplyRequest $request)
     {
-        //
+        $reply = $question->replies()->create($request->all());
+
+        if ($reply) {
+            $response['data'] = new SingleReplyResource($reply);
+            return response()->json($response, Response::HTTP_CREATED);
+
+        } else {
+            $response['data'] = "Error occurred while creating the reply";
+            return response($response, Response::HTTP_BAD_REQUEST);
+        }
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Reply  $reply
-     * @return \Illuminate\Http\Response
+     * @param Reply $reply
+     * @return SingleReplyResource
      */
     public function show(Reply $reply)
     {
-        //
+        return new SingleReplyResource($reply);
+
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Reply  $reply
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Reply $reply)
-    {
-        //
-    }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Reply  $reply
+     * @param UpdateReplyRequest $request
+     * @param Reply $reply
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Reply $reply)
+    public function update(UpdateReplyRequest $request, Reply $reply)
     {
-        //
+        $result = $reply->update($request->all());
+
+        if ($result) {
+            $response['data'] = new SingleReplyResource($reply);
+            return response()->json($response, Response::HTTP_CREATED);
+
+        } else {
+            $response['data'] = "Error occurred while updating the reply";
+            return response($response, Response::HTTP_BAD_REQUEST);
+        }
+
     }
 
     /**
      * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Reply  $reply
+     * @param Reply $reply
      * @return \Illuminate\Http\Response
      */
     public function destroy(Reply $reply)
     {
-        //
+        try {
+            $reply->delete();
+            $response['data']['message'] = "Reply has been deleted";
+            return response()->json($response, Response::HTTP_OK);
+
+        } catch (Exception $e) {
+            $response['data']['message'] = $e->getMessage();
+            return response($response, Response::HTTP_BAD_REQUEST);
+        }
     }
 }

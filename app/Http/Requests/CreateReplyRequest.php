@@ -23,7 +23,6 @@ class CreateReplyRequest extends FormRequest
     {
         return [
             'body.required' => 'Reply body can not be empty',
-            'question_id' => 'Incompatible question mapping',
         ];
     }
 
@@ -36,7 +35,6 @@ class CreateReplyRequest extends FormRequest
     {
         return [
             'body' => 'required|string',
-            'question_id' => 'required|integer',
         ];
     }
 }

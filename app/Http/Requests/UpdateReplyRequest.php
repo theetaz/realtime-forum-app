@@ -17,6 +17,16 @@ class UpdateReplyRequest extends FormRequest
     }
 
     /**
+     * @return array
+     */
+    public function messages()
+    {
+        return [
+            'body.required' => 'Reply body can not be empty',
+        ];
+    }
+
+    /**
      * Get the validation rules that apply to the request.
      *
      * @return array
@@ -24,7 +34,7 @@ class UpdateReplyRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'body' => 'required|string',
         ];
     }
 }

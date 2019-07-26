@@ -9,6 +9,12 @@ use Symfony\Component\HttpFoundation\Response;
 
 class LikeController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('jwt')
+            ->only(['like', 'disLike']);
+    }
+
     /**
      * @param Reply $reply
      * @return JsonResponse

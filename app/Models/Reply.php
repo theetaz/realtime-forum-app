@@ -37,8 +37,13 @@ class Reply extends Model
     protected $fillable = [
         'body',
         'question_id',
-        'user_id',
     ];
+
+    public function setBodyAttribute($value)
+    {
+        $this->attributes['body'] = $value;
+        $this->attributes['user_id'] = auth()->id();
+    }
 
     public function question()
     {

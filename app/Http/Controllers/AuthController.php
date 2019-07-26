@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateUserRequest;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 class AuthController extends Controller
 {
@@ -14,7 +16,7 @@ class AuthController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['login']]);
+        $this->middleware('auth:api', ['except' => ['login', 'register']]);
     }
 
     /**
@@ -81,8 +83,21 @@ class AuthController extends Controller
         return $this->respondWithToken(auth()->refresh());
     }
 
+    /**
+     * @param CreateUserRequest $request
+     * @return JsonResponse
+     */
     public function register(CreateUserRequest $request)
     {
+        $user = User::create($request->all());
+        if ($user) {
+            $token = auth()->tokenById($user->id);
+            return $this->respondWithToken($token);
+        } else {
+            return response()->json([
+                'message' => 'error occurred while creating the user',
+            ], Response::HTTP_UNAUTHORIZED);
+        }
 
     }
 }

@@ -21,9 +21,8 @@ class LikeController extends Controller
      */
     public function like(Reply $reply)
     {
-        //TODO remove hardcoded user id with JWT Auth
         $like = $reply->likes()->create([
-            'user_id' => 1,
+            'user_id' => auth()->id(),
         ]);
 
         if ($like) {
@@ -44,9 +43,8 @@ class LikeController extends Controller
     {
         try {
 
-            //TODO remove hardcoded user id with JWT Auth
             $reply->likes()
-                ->where('user_id', 1)
+                ->where('user_id', auth()->id())
                 ->first()
                 ->delete();
 

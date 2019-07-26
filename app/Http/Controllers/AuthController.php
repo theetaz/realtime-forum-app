@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CreateUserRequest;
 use Illuminate\Http\JsonResponse;
 
 class AuthController extends Controller
@@ -78,5 +79,10 @@ class AuthController extends Controller
     public function refresh()
     {
         return $this->respondWithToken(auth()->refresh());
+    }
+
+    public function register(CreateUserRequest $request)
+    {
+
     }
 }

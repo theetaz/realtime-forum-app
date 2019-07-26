@@ -47,7 +47,6 @@ class Question extends Model
         'title',
         'body',
         'category_id',
-        'user_id'
     ];
 
 
@@ -56,14 +55,20 @@ class Question extends Model
      */
     public function getRouteKeyName()
     {
-       return 'slug';
+        return 'slug';
     }
 
 
+    /**
+     * @param $title
+     */
     public function setTitleAttribute($title)
     {
-       $this->attributes['title'] = $title;
-       $this->attributes['slug'] = GlobalHelper::generateSlug($title, 'title', $this->getTable());
+        $this->attributes['title'] = $title;
+        $this->attributes['slug'] = GlobalHelper::generateSlug($title, 'title', $this->getTable());
+
+        //save user id value when creating the question
+        $this->attributes['user_id'] = auth()->id();
     }
 
     /**
@@ -95,7 +100,7 @@ class Question extends Model
      */
     public function getPathAttribute()
     {
-        return url('api') .'/question/'. $this->slug;
+        return url('api') . '/question/' . $this->slug;
     }
 
 

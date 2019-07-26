@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="17defb41-dc08-4d72-b7af-388cf1b20d35" name="Default Changelist" comment="" />
+    <list default="true" id="17defb41-dc08-4d72-b7af-388cf1b20d35" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -348,7 +350,7 @@
       <updated>1563871199839</updated>
       <workItem from="1563871201171" duration="1301000" />
       <workItem from="1563886319409" duration="3414000" />
-      <workItem from="1563934835677" duration="19955000" />
+      <workItem from="1563934835677" duration="20613000" />
     </task>
     <task id="LOCAL-00001" summary="modify the question response mapper">
       <created>1563963529666</created>
@@ -410,11 +412,10 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="24670000" />
+    <option name="totallyTimeSpent" value="25328000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1680" height="1050" extended-state="0" />
-    <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.1990232" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
@@ -432,7 +433,7 @@
       <window_info anchor="bottom" id="Version Control" order="8" />
       <window_info anchor="bottom" id="Database Changes" order="9" />
       <window_info anchor="bottom" id="Event Log" order="10" sideWeight="0.50061053" side_tool="true" weight="0.3283582" />
-      <window_info anchor="bottom" id="Terminal" order="11" sideWeight="0.4993895" weight="0.327551" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="11" sideWeight="0.4993895" visible="true" weight="0.327551" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />

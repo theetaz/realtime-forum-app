@@ -1882,7 +1882,6 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Toolbar__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Toolbar */ "./resources/js/components/Toolbar.vue");
 /* harmony import */ var _AppFooter__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./AppFooter */ "./resources/js/components/AppFooter.vue");
-/* harmony import */ var _login_Login__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./login/Login */ "./resources/js/components/login/Login.vue");
 //
 //
 //
@@ -1894,17 +1893,12 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {
     Toolbar: _Toolbar__WEBPACK_IMPORTED_MODULE_0__["default"],
-    AppFooter: _AppFooter__WEBPACK_IMPORTED_MODULE_1__["default"],
-    Login: _login_Login__WEBPACK_IMPORTED_MODULE_2__["default"]
+    AppFooter: _AppFooter__WEBPACK_IMPORTED_MODULE_1__["default"]
   },
   mounted: function mounted() {
     console.log("Component mounted.");
@@ -1946,36 +1940,19 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       valid: true,
       email: "",
-      emailRules: [function (v) {
-        return !!v || "E-mail is required";
-      }, function (v) {
-        return /.+@.+\..+/.test(v) || "E-mail must be valid";
-      }],
-      password: "",
-      passwordRules: [function (v) {
-        return !!v || "Password is required";
-      }, function (v) {
-        return v && v.length >= 6 || "Min 6 characters";
-      }],
-      show: false
+      show: false,
+      password: ""
     };
   },
   methods: {
     submit: function submit() {
       console.log("submited");
-      this.$refs.form.validate();
-
-      if (this.$refs.form.validate()) {
-        User.login(this.email, this.password);
-      }
+      User.login(this.email, this.password);
     },
     clear: function clear() {
       this.$refs.form.reset();
@@ -3268,7 +3245,7 @@ var render = function() {
     [
       _c("toolbar"),
       _vm._v(" "),
-      _c("router-view", [_c("login")], 1),
+      _c("router-view"),
       _vm._v(" "),
       _c("app-footer")
     ],
@@ -3430,7 +3407,6 @@ var render = function() {
                     attrs: {
                       label: "Email Address",
                       outlined: "",
-                      rules: _vm.emailRules,
                       required: ""
                     },
                     model: {
@@ -3446,10 +3422,8 @@ var render = function() {
                     attrs: {
                       "append-icon": _vm.show ? "visibility" : "visibility_off",
                       type: _vm.show ? "text" : "password",
-                      rules: _vm.passwordRules,
                       outlined: "",
                       label: "Password",
-                      hint: "At least 6 characters",
                       required: ""
                     },
                     on: {
@@ -54789,9 +54763,11 @@ function () {
           password: password
         }
       }).then(function (response) {
-        console.log(response.data);
+        console.log(response);
+        return response;
       })["catch"](function (error) {
-        console.log("hello");
+        console.log(error.response);
+        return error;
       });
     }
   }]);

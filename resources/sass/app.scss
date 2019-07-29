@@ -1,8 +1,9 @@
 // Fonts
-@import url('https://fonts.googleapis.com/css?family=Nunito');
+@import url('https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900');
 
-// Variables
-@import 'variables';
+// import vuetify
+@import '~vuetify/dist/vuetify.min.css';
 
-// Bootstrap
-@import '~bootstrap/scss/bootstrap';
+@import '~@mdi/font/css/materialdesignicons.css';
+
+@import '~material-design-icons-iconfont/dist/material-design-icons.css';

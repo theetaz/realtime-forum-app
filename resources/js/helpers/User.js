@@ -12,10 +12,12 @@ class User {
             }
         })
             .then(response => {
-                console.log(response.data);
+                console.log(response);
+                return response;
             })
             .catch(error => {
-                console.log("hello");
+                console.log(error.response);
+                return error;
             });
     }
 }

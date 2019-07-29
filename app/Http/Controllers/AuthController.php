@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Requests\CreateUserRequest;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpFoundation\Response;
 
 class AuthController extends Controller
@@ -23,9 +25,17 @@ class AuthController extends Controller
      * Get a JWT via given credentials.
      *
      * @return JsonResponse
+     * @throws ValidationException
      */
     public function login()
     {
+        $validator = Validator::make(request(['email', 'password']), [
+            'email' => 'required|email',
+            'password' => 'required'
+        ]);
+
+        $validator->validate();
+
         $credentials = request(['email', 'password']);
 
         if (!$token = auth()->attempt($credentials)) {

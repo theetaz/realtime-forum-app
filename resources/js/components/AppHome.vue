@@ -1,10 +1,7 @@
 <template>
   <div class="main-container">
     <toolbar></toolbar>
-    <router-view>
-      
-        <login></login>
-      
+    <router-view> 
     </router-view>
 
     <app-footer></app-footer>
@@ -15,13 +12,11 @@
 <script>
 import Toolbar from "./Toolbar";
 import AppFooter from "./AppFooter";
-import Login from "./login/Login";
 
 export default {
   components: {
     Toolbar,
     AppFooter,
-    Login
   },
   mounted() {
     console.log("Component mounted.");

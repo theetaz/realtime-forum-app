@@ -1940,21 +1940,68 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       valid: true,
       email: "",
       show: false,
-      password: ""
+      password: "",
+      errorEmail: "",
+      loading: false,
+      errorPassword: ""
     };
   },
   methods: {
     submit: function submit() {
-      console.log("submited");
-      User.login(this.email, this.password);
+      var _this = this;
+
+      this.loading = true;
+      User.login(this.email, this.password).then(function (response) {
+        //console.log(response);
+        _this.loading = false;
+      })["catch"](function (error) {
+        //console.log(error.response.errors);
+        _this.errorEmail = error.response.data.errors ? error.response.data.errors.email || "" : "";
+        _this.errorPassword = error.response.data.errors ? error.response.data.errors.password || "" : "";
+        _this.loading = false;
+      });
     },
     clear: function clear() {
+      this.errorEmail = "";
+      this.errorPassword = "";
       this.$refs.form.reset();
     }
   },
@@ -1996,7 +2043,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.login-component {\n  margin-top: 50px;\n}\n", ""]);
+exports.push([module.i, "\n.login-component {\n  margin-top: 50px;\n}\n.login-container {\n  padding: 20px 10px;\n}\n.btn-container {\n  text-align: end;\n}\n", ""]);
 
 // exports
 
@@ -3376,10 +3423,7 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c(
     "v-container",
-    {
-      staticClass: "login-component",
-      attrs: { "grid-list-xl": "", "text-center": "" }
-    },
+    { staticClass: "login-component", attrs: { "grid-list-xl": "" } },
     [
       _c(
         "v-layout",
@@ -3387,66 +3431,110 @@ var render = function() {
         [
           _c(
             "v-flex",
-            { attrs: { xs8: "", "offset-xs2": "" } },
+            { attrs: { md8: "", "offset-md2": "" } },
             [
               _c(
-                "v-form",
-                {
-                  ref: "form",
-                  attrs: { "lazy-validation": "" },
-                  model: {
-                    value: _vm.valid,
-                    callback: function($$v) {
-                      _vm.valid = $$v
-                    },
-                    expression: "valid"
-                  }
-                },
+                "v-card",
+                { staticClass: "login-container", attrs: { outlined: "" } },
                 [
-                  _c("v-text-field", {
-                    attrs: {
-                      label: "Email Address",
-                      outlined: "",
-                      required: ""
-                    },
-                    model: {
-                      value: _vm.email,
-                      callback: function($$v) {
-                        _vm.email = $$v
-                      },
-                      expression: "email"
-                    }
-                  }),
-                  _vm._v(" "),
-                  _c("v-text-field", {
-                    attrs: {
-                      "append-icon": _vm.show ? "visibility" : "visibility_off",
-                      type: _vm.show ? "text" : "password",
-                      outlined: "",
-                      label: "Password",
-                      required: ""
-                    },
-                    on: {
-                      "click:append": function($event) {
-                        _vm.show = !_vm.show
+                  _c(
+                    "v-form",
+                    {
+                      ref: "form",
+                      attrs: { "lazy-validation": "" },
+                      model: {
+                        value: _vm.valid,
+                        callback: function($$v) {
+                          _vm.valid = $$v
+                        },
+                        expression: "valid"
                       }
                     },
-                    model: {
-                      value: _vm.password,
-                      callback: function($$v) {
-                        _vm.password = $$v
-                      },
-                      expression: "password"
-                    }
-                  }),
-                  _vm._v(" "),
-                  _c(
-                    "v-btn",
-                    { staticClass: "mr-4", on: { click: _vm.submit } },
-                    [_vm._v("submit")]
-                  ),
-                  _vm._v(" "),
-                  _c("v-btn", { on: { click: _vm.clear } }, [_vm._v("clear")])
+                    [
+                      _c("v-text-field", {
+                        attrs: {
+                          label: "Email Address",
+                          outlined: "",
+                          required: "",
+                          "error-messages": _vm.errorEmail ? _vm.errorEmail : ""
+                        },
+                        on: {
+                          keydown: function($event) {
+                            _vm.errorEmail = ""
+                          }
+                        },
+                        model: {
+                          value: _vm.email,
+                          callback: function($$v) {
+                            _vm.email = $$v
+                          },
+                          expression: "email"
+                        }
+                      }),
+                      _vm._v(" "),
+                      _c("v-text-field", {
+                        attrs: {
+                          "append-icon": _vm.show
+                            ? "visibility"
+                            : "visibility_off",
+                          type: _vm.show ? "text" : "password",
+                          outlined: "",
+                          label: "Password",
+                          required: "",
+                          "error-messages": _vm.errorPassword
+                            ? _vm.errorPassword
+                            : ""
+                        },
+                        on: {
+                          keydown: function($event) {
+                            _vm.errorPassword = ""
+                          },
+                          "click:append": function($event) {
+                            _vm.show = !_vm.show
+                          }
+                        },
+                        model: {
+                          value: _vm.password,
+                          callback: function($$v) {
+                            _vm.password = $$v
+                          },
+                          expression: "password"
+                        }
+                      }),
+                      _vm._v(" "),
+                      _c(
+                        "div",
+                        { staticClass: "btn-container" },
+                        [
+                          _c(
+                            "v-btn",
+                            {
+                              staticClass: "mr-4",
+                              attrs: {
+                                rounded: "",
+                                loading: _vm.loading,
+                                color: "primary",
+                                dark: ""
+                              },
+                              on: { click: _vm.submit }
+                            },
+                            [_vm._v("Login")]
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "v-btn",
+                            {
+                              attrs: { rounded: "" },
+                              on: { click: _vm.clear }
+                            },
+                            [_vm._v("Reset")]
+                          )
+                        ],
+                        1
+                      )
+                    ],
+                    1
+                  )
                 ],
                 1
               )
@@ -54755,19 +54843,21 @@ function () {
   _createClass(User, [{
     key: "login",
     value: function login(email, password) {
-      axios__WEBPACK_IMPORTED_MODULE_0___default()({
-        method: "post",
-        url: "/api/auth/login",
-        data: {
-          email: email,
-          password: password
-        }
-      }).then(function (response) {
-        console.log(response);
-        return response;
-      })["catch"](function (error) {
-        console.log(error.response);
-        return error;
+      return new Promise(function (resolve, reject) {
+        axios__WEBPACK_IMPORTED_MODULE_0___default()({
+          method: "post",
+          url: "/api/auth/login",
+          data: {
+            email: email,
+            password: password
+          }
+        }).then(function (response) {
+          console.log(response);
+          resolve(response);
+        })["catch"](function (error) {
+          console.log(error.response);
+          reject(error);
+        });
       });
     }
   }]);

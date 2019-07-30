@@ -3,22 +3,27 @@ import axios from "axios";
 class User {
 
     login(email, password) {
-        axios({
-            method: "post",
-            url: "/api/auth/login",
-            data: {
-                email: email,
-                password: password
-            }
-        })
-            .then(response => {
-                console.log(response);
-                return response;
+
+        return new Promise((resolve, reject) => {
+
+            axios({
+                method: "post",
+                url: "/api/auth/login",
+                data: {
+                    email: email,
+                    password: password
+                }
             })
-            .catch(error => {
-                console.log(error.response);
-                return error;
-            });
+                .then(response => {
+                    console.log(response);
+                    resolve(response);
+                })
+                .catch(error => {
+                    console.log(error.response);
+                    reject(error);
+                });
+        })
+
     }
 }
 

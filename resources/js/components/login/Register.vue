@@ -1,9 +1,9 @@
 <template>
-  <v-container grid-list-xl class="login-component">
+  <v-container grid-list-xl class="register-component">
     <v-layout wrap>
       <v-flex md8 offset-md2>
-        <v-card class="login-container" outlined>
-          <div class="login-title">Login</div>
+        <v-card class="register-container" outlined>
+          <div class="register-title">Register</div>
           <!-- alert container -->
           <div class="alert-container" v-show="alertMessage">
             <v-alert type="error" transition="scale-transition">{{ alertMessage }}</v-alert>
@@ -11,9 +11,20 @@
           <!-- /alert container -->
 
           <v-form ref="form" v-model="valid" lazy-validation>
+            <!-- name input field  -->
+            <v-text-field
+              v-model="formData.name"
+              label="Full Name"
+              outlined
+              required
+              @keydown="errorName = ''; alertMessage= ''"
+              :error-messages="errorName ? errorName : ''"
+            ></v-text-field>
+            <!--/name input field  -->
+
             <!-- email input field  -->
             <v-text-field
-              v-model="email"
+              v-model="formData.email"
               label="Email Address"
               outlined
               required
@@ -24,7 +35,7 @@
 
             <!-- passwpord input field -->
             <v-text-field
-              v-model="password"
+              v-model="formData.password"
               :append-icon="show ? 'visibility' : 'visibility_off'"
               :type="show ? 'text' : 'password'"
               outlined
@@ -36,6 +47,20 @@
             ></v-text-field>
             <!-- /passwpord input field -->
 
+            <!-- confirm passwpord input field -->
+            <v-text-field
+              v-model="formData.confimPassword"
+              :append-icon="show ? 'visibility' : 'visibility_off'"
+              :type="show ? 'text' : 'password'"
+              outlined
+              label="Confirm password"
+              required
+              @keydown="errorConfirmPassword = ''; alertMessage= ''"
+              :error-messages="errorConfirmPassword ? errorConfirmPassword : ''"
+              @click:append="show = !show"
+            ></v-text-field>
+            <!-- /confirm passwpord input field -->
+
             <div class="btn-container">
               <!-- login button -->
               <v-btn
@@ -45,7 +70,7 @@
                 color="primary"
                 dark
                 @click="submit"
-              >Login</v-btn>
+              >Register</v-btn>
               <!-- /login button -->
 
               <!-- reset button -->
@@ -53,20 +78,6 @@
               <!-- /reset button -->
             </div>
           </v-form>
-
-          <div class="register-container">
-            <!-- register button -->
-            <div class="register-text">Don't you have an account yet?
-              <router-link to="/register">
-                <span>Register now</span> 
-              </router-link>
-            </div>
-            
-              
-            
-            <!-- /register button -->
-          </div>
-
         </v-card>
       </v-flex>
     </v-layout>
@@ -74,70 +85,58 @@
 </template>
 
 <script>
-import AppStorage from "../../helpers/AppStorage";
 
 export default {
   data: () => ({
     valid: true,
-    email: "",
+    formData: {
+      name: "",
+      email: "",
+      password: "",
+      confimPassword: ""
+    },
     show: false,
-    password: "",
+    errorName: "",
     errorEmail: "",
-    loading: false,
     errorPassword: "",
-    alertMessage: ""
+    alertMessage: "",
+    errorConfirmPassword: "",
+    loading: false
   }),
 
   methods: {
     submit() {
       this.loading = true;
-      User.login(this.email, this.password)
-        .then(response => {
-          this.alertMessage = "";
-          this.loading = false;
-        })
-        .catch(error => {
-          if (error.response.status === 401) {
-            this.alertMessage = "Invalid login details, Please try again!";
-          } else {
-            this.errorEmail = error.response.data.errors
-              ? error.response.data.errors.email || ""
-              : "";
-            this.errorPassword = error.response.data.errors
-              ? error.response.data.errors.password || ""
-              : "";
-            this.alertMessage = "";
-          }
-
-          this.loading = false;
-        });
+      console.log(this.formData);
     },
     clear() {
       this.alertMessage = "";
+      this.errorName = "";
       this.errorEmail = "";
       this.errorPassword = "";
+      this.errorConfirmPassword = "";
       this.$refs.form.reset();
     }
   },
   mounted() {
-    console.log("Login component mounted.");
+    console.log("Register component mounted.");
   }
 };
 </script>
 
 
 <style>
-.login-component {
+.register-component {
   margin-top: 50px;
 }
 
-.login-title {
+.register-title {
   text-align: left;
   padding-bottom: 5px;
   text-transform: uppercase;
   font-size: 17px;
 }
-.login-container {
+.register-container {
   padding: 20px 10px;
 }
 

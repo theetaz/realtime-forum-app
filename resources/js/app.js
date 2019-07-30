@@ -17,6 +17,7 @@ window.User = User;
 Vue.use(Vuetify);
 Vue.component('AppHome', require('./components/AppHome.vue'));
 
+console.log(User.getName());
 
 const app = new Vue({
     el: '#app',

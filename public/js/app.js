@@ -1998,14 +1998,6 @@ __webpack_require__.r(__webpack_exports__);
 
       this.loading = true;
       User.login(this.email, this.password).then(function (response) {
-        //if login sucess check the status code for 200
-        if (response.status === 200) {
-          //store access token and user details in local storage
-          var token = response.data.access_token || null;
-          var user = response.data.user || null;
-          _helpers_AppStorage__WEBPACK_IMPORTED_MODULE_0__["default"].store(token, JSON.stringify(user));
-        }
-
         _this.alertMessage = "";
         _this.loading = false;
       })["catch"](function (error) {
@@ -54561,6 +54553,7 @@ __webpack_require__.r(__webpack_exports__);
 window.User = _helpers_User__WEBPACK_IMPORTED_MODULE_4__["default"];
 vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuetify__WEBPACK_IMPORTED_MODULE_1___default.a);
 vue__WEBPACK_IMPORTED_MODULE_0___default.a.component('AppHome', __webpack_require__(/*! ./components/AppHome.vue */ "./resources/js/components/AppHome.vue"));
+console.log(_helpers_User__WEBPACK_IMPORTED_MODULE_4__["default"].getName());
 var app = new vue__WEBPACK_IMPORTED_MODULE_0___default.a({
   el: '#app',
   router: _router_route__WEBPACK_IMPORTED_MODULE_3__["default"],
@@ -54892,20 +54885,24 @@ function () {
 
   _createClass(AppStorage, [{
     key: "storeToken",
+    //store tiken data to local storage
     value: function storeToken(token) {
       localStorage.setItem('token', token);
-    }
+    } //store user data to lcoal storage
+
   }, {
     key: "storeUser",
     value: function storeUser(user) {
       localStorage.setItem('user', user);
-    }
+    } //store token and user data to the local storage
+
   }, {
     key: "store",
     value: function store(token, user) {
       this.storeToken(token);
       this.storeUser(user);
-    }
+    } //clear local storage user and token data
+
   }, {
     key: "clear",
     value: function clear() {
@@ -54916,12 +54913,14 @@ function () {
       if (localStorage.getItem('token') !== null) {
         localStorage.removeItem('token');
       }
-    }
+    } //get the token form local storage
+
   }, {
     key: "getToken",
     value: function getToken() {
       return localStorage.getItem('token') || null;
-    }
+    } //get the user from local storage
+
   }, {
     key: "getUser",
     value: function getUser() {
@@ -55006,11 +55005,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _Token__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Token */ "./resources/js/helpers/Token.js");
+/* harmony import */ var _AppStorage__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./AppStorage */ "./resources/js/helpers/AppStorage.js");
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
 
 
 
@@ -55025,6 +55026,8 @@ function () {
   _createClass(User, [{
     key: "login",
     value: function login(email, password) {
+      var _this = this;
+
       return new Promise(function (resolve, reject) {
         axios__WEBPACK_IMPORTED_MODULE_0___default()({
           method: "post",
@@ -55034,15 +55037,84 @@ function () {
             password: password
           }
         }).then(function (response) {
-          var token = response.data.access_token;
+          var token = response.data.access_token || null;
+          var user = response.data.user || null;
 
-          if (_Token__WEBPACK_IMPORTED_MODULE_1__["default"].isValid(token)) {
-            resolve(response);
-          }
+          _this.saveUserDataAfterLogin(token, user);
+
+          resolve(response);
         })["catch"](function (error) {
           reject(error);
         });
       });
+    } //check token is already in local storage 
+
+  }, {
+    key: "hasToken",
+    value: function hasToken() {
+      var savedToken = _AppStorage__WEBPACK_IMPORTED_MODULE_2__["default"].getToken();
+
+      if (savedToken) {
+        return _Token__WEBPACK_IMPORTED_MODULE_1__["default"].isValid(savedToken) ? true : false;
+      }
+
+      return false;
+    } //check user login or not
+
+  }, {
+    key: "isUserLogin",
+    value: function isUserLogin() {
+      return this.hasToken();
+    } //user logout function
+
+  }, {
+    key: "logout",
+    value: function logout() {
+      _AppStorage__WEBPACK_IMPORTED_MODULE_2__["default"].clear();
+    } //get log in user user name
+
+  }, {
+    key: "getName",
+    value: function getName() {
+      if (this.isUserLogin()) {
+        //get the user object form local strage
+        var user = JSON.parse(_AppStorage__WEBPACK_IMPORTED_MODULE_2__["default"].getUser());
+
+        if (user) {
+          return user.name;
+        }
+
+        return null;
+      }
+
+      return null;
+    } //get log in user id
+
+  }, {
+    key: "getUserId",
+    value: function getUserId() {
+      if (this.isUserLogin()) {
+        //get the user object form local strage
+        var user = JSON.parse(_AppStorage__WEBPACK_IMPORTED_MODULE_2__["default"].getUser());
+
+        if (user) {
+          return user.id;
+        }
+
+        return null;
+      }
+
+      return null;
+    } //save token and user data to local storage
+
+  }, {
+    key: "saveUserDataAfterLogin",
+    value: function saveUserDataAfterLogin(token, user) {
+      //check provided token is valid or not
+      if (_Token__WEBPACK_IMPORTED_MODULE_1__["default"].isValid(token)) {
+        //store access token and user details in local storage
+        _AppStorage__WEBPACK_IMPORTED_MODULE_2__["default"].store(token, JSON.stringify(user));
+      }
     }
   }]);
 

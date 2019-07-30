@@ -79,14 +79,6 @@ export default {
       this.loading = true;
       User.login(this.email, this.password)
         .then(response => {
-          //if login sucess check the status code for 200
-          if (response.status === 200) {
-            //store access token and user details in local storage
-            const token = response.data.access_token || null;
-            const user = response.data.user || null;
-            AppStorage.store(token, JSON.stringify(user));
-          }
-
           this.alertMessage = "";
           this.loading = false;
         })

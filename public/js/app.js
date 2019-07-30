@@ -1916,6 +1916,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _helpers_AppStorage__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../helpers/AppStorage */ "./resources/js/helpers/AppStorage.js");
 //
 //
 //
@@ -1977,6 +1978,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -1996,17 +1998,22 @@ __webpack_require__.r(__webpack_exports__);
 
       this.loading = true;
       User.login(this.email, this.password).then(function (response) {
-        //console.log(response);
+        //if login sucess check the status code for 200
+        if (response.status === 200) {
+          //store access token and user details in local storage
+          var token = response.data.access_token || null;
+          var user = response.data.user || null;
+          _helpers_AppStorage__WEBPACK_IMPORTED_MODULE_0__["default"].store(token, JSON.stringify(user));
+        }
+
         _this.alertMessage = "";
         _this.loading = false;
       })["catch"](function (error) {
-        //console.log(error.response.errors);
-        _this.errorEmail = error.response.data.errors ? error.response.data.errors.email || "" : "";
-        _this.errorPassword = error.response.data.errors ? error.response.data.errors.password || "" : "";
-
         if (error.response.status === 401) {
           _this.alertMessage = "Invalid login details, Please try again!";
         } else {
+          _this.errorEmail = error.response.data.errors ? error.response.data.errors.email || "" : "";
+          _this.errorPassword = error.response.data.errors ? error.response.data.errors.password || "" : "";
           _this.alertMessage = "";
         }
 
@@ -2058,7 +2065,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.login-component {\n  margin-top: 50px;\n}\n.login-title{\n  text-align: left;\n  padding-bottom: 5px;\n  text-transform: uppercase;\n  font-size: 17px;\n}\n.login-container {\n  padding: 20px 10px;\n}\n.btn-container {\n  text-align: end;\n}\n", ""]);
+exports.push([module.i, "\n.login-component {\n  margin-top: 50px;\n}\n.login-title {\n  text-align: left;\n  padding-bottom: 5px;\n  text-transform: uppercase;\n  font-size: 17px;\n}\n.login-container {\n  padding: 20px 10px;\n}\n.btn-container {\n  text-align: end;\n}\n", ""]);
 
 // exports
 
@@ -54861,6 +54868,74 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./resources/js/helpers/AppStorage.js":
+/*!********************************************!*\
+  !*** ./resources/js/helpers/AppStorage.js ***!
+  \********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+var AppStorage =
+/*#__PURE__*/
+function () {
+  function AppStorage() {
+    _classCallCheck(this, AppStorage);
+  }
+
+  _createClass(AppStorage, [{
+    key: "storeToken",
+    value: function storeToken(token) {
+      localStorage.setItem('token', token);
+    }
+  }, {
+    key: "storeUser",
+    value: function storeUser(user) {
+      localStorage.setItem('user', user);
+    }
+  }, {
+    key: "store",
+    value: function store(token, user) {
+      this.storeToken(token);
+      this.storeUser(user);
+    }
+  }, {
+    key: "clear",
+    value: function clear() {
+      if (localStorage.getItem('user') !== null) {
+        localStorage.removeItem('user');
+      }
+
+      if (localStorage.getItem('token') !== null) {
+        localStorage.removeItem('token');
+      }
+    }
+  }, {
+    key: "getToken",
+    value: function getToken() {
+      return localStorage.getItem('token') || null;
+    }
+  }, {
+    key: "getUser",
+    value: function getUser() {
+      return localStorage.getItem('user') || null;
+    }
+  }]);
+
+  return AppStorage;
+}();
+
+/* harmony default export */ __webpack_exports__["default"] = (AppStorage = new AppStorage());
+
+/***/ }),
+
 /***/ "./resources/js/helpers/User.js":
 /*!**************************************!*\
   !*** ./resources/js/helpers/User.js ***!
@@ -54899,10 +54974,8 @@ function () {
             password: password
           }
         }).then(function (response) {
-          console.log(response);
           resolve(response);
         })["catch"](function (error) {
-          console.log(error.response);
           reject(error);
         });
       });

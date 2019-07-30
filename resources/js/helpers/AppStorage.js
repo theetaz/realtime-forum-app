@@ -28,6 +28,7 @@ class AppStorage{
     getUser(){
         return localStorage.getItem('user') || null;
     }
+
 }
 
 export default AppStorage = new AppStorage();

@@ -15,11 +15,9 @@ class User {
                 }
             })
                 .then(response => {
-                    console.log(response);
                     resolve(response);
                 })
                 .catch(error => {
-                    console.log(error.response);
                     reject(error);
                 });
         })

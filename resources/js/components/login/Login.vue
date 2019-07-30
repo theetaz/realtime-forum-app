@@ -60,6 +60,8 @@
 </template>
 
 <script>
+import AppStorage from "../../helpers/AppStorage";
+
 export default {
   data: () => ({
     valid: true,
@@ -77,22 +79,27 @@ export default {
       this.loading = true;
       User.login(this.email, this.password)
         .then(response => {
-          //console.log(response);
+          //if login sucess check the status code for 200
+          if (response.status === 200) {
+            //store access token and user details in local storage
+            const token = response.data.access_token || null;
+            const user = response.data.user || null;
+            AppStorage.store(token, JSON.stringify(user));
+          }
+
           this.alertMessage = "";
           this.loading = false;
         })
         .catch(error => {
-          //console.log(error.response.errors);
-          this.errorEmail = error.response.data.errors
-            ? error.response.data.errors.email || ""
-            : "";
-          this.errorPassword = error.response.data.errors
-            ? error.response.data.errors.password || ""
-            : "";
-
           if (error.response.status === 401) {
             this.alertMessage = "Invalid login details, Please try again!";
           } else {
+            this.errorEmail = error.response.data.errors
+              ? error.response.data.errors.email || ""
+              : "";
+            this.errorPassword = error.response.data.errors
+              ? error.response.data.errors.password || ""
+              : "";
             this.alertMessage = "";
           }
 
@@ -118,7 +125,7 @@ export default {
   margin-top: 50px;
 }
 
-.login-title{
+.login-title {
   text-align: left;
   padding-bottom: 5px;
   text-transform: uppercase;

@@ -91,7 +91,6 @@ export default {
           this.loading = false;
         })
         .catch(error => {
-          console.log(error.response);
           if (error.response.status === 401) {
             this.alertMessage = "Invalid login details, Please try again!";
           } else {

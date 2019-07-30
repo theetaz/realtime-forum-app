@@ -2009,8 +2009,6 @@ __webpack_require__.r(__webpack_exports__);
         _this.alertMessage = "";
         _this.loading = false;
       })["catch"](function (error) {
-        console.log(error.response);
-
         if (error.response.status === 401) {
           _this.alertMessage = "Invalid login details, Please try again!";
         } else {
@@ -54966,10 +54964,9 @@ function () {
       var decodedPayload = this.payload(token);
 
       if (decodedPayload) {
-        console.log(decodedPayload);
         var permitedUrls = ['http://realtime-forum-app.test/api/auth/login', 'http://realtime-forum-app.test/api/auth/register'];
 
-        if (permitedUrls.find(decodedPayload.iss)) {
+        if (permitedUrls.includes(decodedPayload.iss)) {
           return true;
         } else {
           return false;

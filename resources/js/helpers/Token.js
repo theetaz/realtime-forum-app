@@ -5,9 +5,8 @@ class Token {
     isValid(token){
         const decodedPayload =  this.payload(token);
         if(decodedPayload){
-            console.log(decodedPayload);
             const permitedUrls = ['http://realtime-forum-app.test/api/auth/login', 'http://realtime-forum-app.test/api/auth/register'];
-            if(permitedUrls.find(decodedPayload.iss)){
+            if(permitedUrls.includes(decodedPayload.iss)){
                 return true;
             }else{
                 return false;

@@ -1,4 +1,5 @@
 import axios from "axios";
+import Token from "./Token";
 
 class User {
 
@@ -15,7 +16,10 @@ class User {
                 }
             })
                 .then(response => {
-                    resolve(response);
+                    const token = response.data.access_token;
+                    if(Token.isValid(token)){
+                        resolve(response);  
+                    }
                 })
                 .catch(error => {
                     reject(error);

@@ -2009,6 +2009,8 @@ __webpack_require__.r(__webpack_exports__);
         _this.alertMessage = "";
         _this.loading = false;
       })["catch"](function (error) {
+        console.log(error.response);
+
         if (error.response.status === 401) {
           _this.alertMessage = "Invalid login details, Please try again!";
         } else {
@@ -54936,6 +54938,65 @@ function () {
 
 /***/ }),
 
+/***/ "./resources/js/helpers/Token.js":
+/*!***************************************!*\
+  !*** ./resources/js/helpers/Token.js ***!
+  \***************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+var Token =
+/*#__PURE__*/
+function () {
+  function Token() {
+    _classCallCheck(this, Token);
+  }
+
+  _createClass(Token, [{
+    key: "isValid",
+    value: function isValid(token) {
+      var decodedPayload = this.payload(token);
+
+      if (decodedPayload) {
+        console.log(decodedPayload);
+        var permitedUrls = ['http://realtime-forum-app.test/api/auth/login', 'http://realtime-forum-app.test/api/auth/register'];
+
+        if (permitedUrls.find(decodedPayload.iss)) {
+          return true;
+        } else {
+          return false;
+        }
+      }
+    }
+  }, {
+    key: "payload",
+    value: function payload(token) {
+      //decode token and get the payload
+      var payload = token.split('.')[1] || null;
+      return this.decode(payload);
+    }
+  }, {
+    key: "decode",
+    value: function decode(payload) {
+      return JSON.parse(atob(payload));
+    }
+  }]);
+
+  return Token;
+}();
+
+/* harmony default export */ __webpack_exports__["default"] = (Token = new Token());
+
+/***/ }),
+
 /***/ "./resources/js/helpers/User.js":
 /*!**************************************!*\
   !*** ./resources/js/helpers/User.js ***!
@@ -54947,11 +55008,13 @@ function () {
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _Token__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Token */ "./resources/js/helpers/Token.js");
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
 
 
 
@@ -54974,7 +55037,11 @@ function () {
             password: password
           }
         }).then(function (response) {
-          resolve(response);
+          var token = response.data.access_token;
+
+          if (_Token__WEBPACK_IMPORTED_MODULE_1__["default"].isValid(token)) {
+            resolve(response);
+          }
         })["catch"](function (error) {
           reject(error);
         });

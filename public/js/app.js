@@ -1972,6 +1972,11 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -1981,7 +1986,8 @@ __webpack_require__.r(__webpack_exports__);
       password: "",
       errorEmail: "",
       loading: false,
-      errorPassword: ""
+      errorPassword: "",
+      alertMessage: ""
     };
   },
   methods: {
@@ -1991,15 +1997,24 @@ __webpack_require__.r(__webpack_exports__);
       this.loading = true;
       User.login(this.email, this.password).then(function (response) {
         //console.log(response);
+        _this.alertMessage = "";
         _this.loading = false;
       })["catch"](function (error) {
         //console.log(error.response.errors);
         _this.errorEmail = error.response.data.errors ? error.response.data.errors.email || "" : "";
         _this.errorPassword = error.response.data.errors ? error.response.data.errors.password || "" : "";
+
+        if (error.response.status === 401) {
+          _this.alertMessage = "Invalid login details, Please try again!";
+        } else {
+          _this.alertMessage = "";
+        }
+
         _this.loading = false;
       });
     },
     clear: function clear() {
+      this.alertMessage = "";
       this.errorEmail = "";
       this.errorPassword = "";
       this.$refs.form.reset();
@@ -2043,7 +2058,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.login-component {\n  margin-top: 50px;\n}\n.login-container {\n  padding: 20px 10px;\n}\n.btn-container {\n  text-align: end;\n}\n", ""]);
+exports.push([module.i, "\n.login-component {\n  margin-top: 50px;\n}\n.login-title{\n  text-align: left;\n  padding-bottom: 5px;\n  text-transform: uppercase;\n  font-size: 17px;\n}\n.login-container {\n  padding: 20px 10px;\n}\n.btn-container {\n  text-align: end;\n}\n", ""]);
 
 // exports
 
@@ -3437,6 +3452,36 @@ var render = function() {
                 "v-card",
                 { staticClass: "login-container", attrs: { outlined: "" } },
                 [
+                  _c("div", { staticClass: "login-title" }, [_vm._v("Login")]),
+                  _vm._v(" "),
+                  _c(
+                    "div",
+                    {
+                      directives: [
+                        {
+                          name: "show",
+                          rawName: "v-show",
+                          value: _vm.alertMessage,
+                          expression: "alertMessage"
+                        }
+                      ],
+                      staticClass: "alert-container"
+                    },
+                    [
+                      _c(
+                        "v-alert",
+                        {
+                          attrs: {
+                            type: "error",
+                            transition: "scale-transition"
+                          }
+                        },
+                        [_vm._v(_vm._s(_vm.alertMessage))]
+                      )
+                    ],
+                    1
+                  ),
+                  _vm._v(" "),
                   _c(
                     "v-form",
                     {
@@ -3461,6 +3506,7 @@ var render = function() {
                         on: {
                           keydown: function($event) {
                             _vm.errorEmail = ""
+                            _vm.alertMessage = ""
                           }
                         },
                         model: {
@@ -3488,6 +3534,7 @@ var render = function() {
                         on: {
                           keydown: function($event) {
                             _vm.errorPassword = ""
+                            _vm.alertMessage = ""
                           },
                           "click:append": function($event) {
                             _vm.show = !_vm.show

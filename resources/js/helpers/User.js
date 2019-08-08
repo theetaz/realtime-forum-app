@@ -29,6 +29,34 @@ class User {
         })
 
     }
+
+
+    register(formData){
+
+        return new Promise( (resolve, reject) => {
+            axios({
+                method: "post",
+                url: "/api/auth/register",
+                data: {
+                    name: formData.name,
+                    email: formData.email,
+                    password: formData.password,
+                    password_confirmation: formData.confimPassword
+
+                }
+            })
+                .then(response => {
+                    const token = response.data.access_token || null;
+                    const user = response.data.user || null;
+                    this.saveUserDataAfterLogin(token, user);
+                    resolve(response);
+
+                })
+                .catch(error => {
+                    reject(error);
+                });
+        });
+    }
     
     //check token is already in local storage 
     hasToken(){

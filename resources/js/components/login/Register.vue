@@ -55,8 +55,8 @@
               outlined
               label="Confirm password"
               required
-              @keydown="errorConfirmPassword = ''; alertMessage= ''"
-              :error-messages="errorConfirmPassword ? errorConfirmPassword : ''"
+              @keydown="errorPassword = ''; alertMessage= ''"
+              :error-messages="errorPassword ? errorPassword : ''"
               @click:append="show = !show"
             ></v-text-field>
             <!-- /confirm passwpord input field -->
@@ -100,14 +100,29 @@ export default {
     errorEmail: "",
     errorPassword: "",
     alertMessage: "",
-    errorConfirmPassword: "",
     loading: false
   }),
 
   methods: {
     submit() {
       this.loading = true;
-      console.log(this.formData);
+      User.register(this.formData)
+        .then((response) => {
+
+          //check for successful user creation
+          if(response.status === 200){
+            //redirect to the dashboard page
+          }
+          this.loading = false;
+          console.log(response);
+
+        }).catch((error) => {
+          //check for validation errors
+          this.errorName = error.response.data.errors.name || "";
+          this.errorEmail = error.response.data.errors.email || "";
+          this.errorPassword = error.response.data.errors.password || "";
+          this.loading = false;
+        });
     },
     clear() {
       this.alertMessage = "";

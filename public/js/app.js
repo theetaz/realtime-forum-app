@@ -2150,14 +2150,28 @@ __webpack_require__.r(__webpack_exports__);
       errorEmail: "",
       errorPassword: "",
       alertMessage: "",
-      errorConfirmPassword: "",
       loading: false
     };
   },
   methods: {
     submit: function submit() {
+      var _this = this;
+
       this.loading = true;
-      console.log(this.formData);
+      User.register(this.formData).then(function (response) {
+        //check for successful user creation
+        if (response.status === 200) {//redirect to the dashboard page
+        }
+
+        _this.loading = false;
+        console.log(response);
+      })["catch"](function (error) {
+        //check for validation errors
+        _this.errorName = error.response.data.errors.name || "";
+        _this.errorEmail = error.response.data.errors.email || "";
+        _this.errorPassword = error.response.data.errors.password || "";
+        _this.loading = false;
+      });
     },
     clear: function clear() {
       this.alertMessage = "";
@@ -3974,13 +3988,13 @@ var render = function() {
                           outlined: "",
                           label: "Confirm password",
                           required: "",
-                          "error-messages": _vm.errorConfirmPassword
-                            ? _vm.errorConfirmPassword
+                          "error-messages": _vm.errorPassword
+                            ? _vm.errorPassword
                             : ""
                         },
                         on: {
                           keydown: function($event) {
-                            _vm.errorConfirmPassword = ""
+                            _vm.errorPassword = ""
                             _vm.alertMessage = ""
                           },
                           "click:append": function($event) {
@@ -55576,6 +55590,33 @@ function () {
           var user = response.data.user || null;
 
           _this.saveUserDataAfterLogin(token, user);
+
+          resolve(response);
+        })["catch"](function (error) {
+          reject(error);
+        });
+      });
+    }
+  }, {
+    key: "register",
+    value: function register(formData) {
+      var _this2 = this;
+
+      return new Promise(function (resolve, reject) {
+        axios__WEBPACK_IMPORTED_MODULE_0___default()({
+          method: "post",
+          url: "/api/auth/register",
+          data: {
+            name: formData.name,
+            email: formData.email,
+            password: formData.password,
+            password_confirmation: formData.confimPassword
+          }
+        }).then(function (response) {
+          var token = response.data.access_token || null;
+          var user = response.data.user || null;
+
+          _this2.saveUserDataAfterLogin(token, user);
 
           resolve(response);
         })["catch"](function (error) {
